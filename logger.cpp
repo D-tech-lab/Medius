@@ -15,7 +15,7 @@ using namespace std;
 static std::string getLevelString(LogLevel level) {
     switch (level) {
     case INFO: return "INFO";
-    case WARN: return "WARN";
+    case WARNING: return "WARNING";
     case ERR: return "ERROR";
     case DEBUG: return "DEBUG";
     default: return "UNKNOWN";
@@ -60,21 +60,21 @@ Logger::Logger() {
         std::strftime(timeBuf, sizeof(timeBuf), "%Y-%m-%d_%H-%M-%S", &localTime);
 
         std::ostringstream fileName;
-        fileName << logDir << "\\winLW_session_" << timeBuf << "_"
+        fileName << logDir << "\\medius_server_" << timeBuf << "_"
             << std::setfill('0') << std::setw(3) << now_ms.count() << ".txt";
 
         // Open the session-specific log file
         logFile_.open(fileName.str(), std::ios::app);
         if (!logFile_.is_open()) {
-            std::cerr << "[Logger ERROR] Unable to open log file: "
+            log(WARNING) << "[Logger ERROR] Unable to open log file: "
                 << fileName.str() << std::endl;
         }
         else {
-            //std::cout << "[Logger INFO] Logging to file: " << fileName.str() << std::endl;
+            //log(INFO) << "[Logger INFO] Logging to file: " << fileName.str() << std::endl;
         }
     }
     catch (const std::exception& e) {
-        std::cerr << "[Logger ERROR] Exception during initialization: " << e.what() << std::endl;
+        log(WARNING) << "[Logger ERROR] Exception during initialization: " << e.what() << std::endl;
     }
 }
 
@@ -128,5 +128,5 @@ void Logger::write(LogLevel level,
         logFile_.flush();
     }
 
-    //std::cout << out << std::endl;
+    //log(INFO) << out << std::endl;
 }
