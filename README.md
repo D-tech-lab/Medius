@@ -21,7 +21,7 @@ Medius
 ├── server.h # Server class declaration
 ├── server.cpp # Server class implementation
 ├── main.cpp # Entry point to start the server
-├── client.cpp # (optional) client implementation
+├── client.cpp # client implementation
 └── README.md # Project documentation
 
 ---
