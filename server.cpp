@@ -14,13 +14,13 @@ bool Server::initialize() {
 #ifdef _WIN32
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-        std::cerr << "WSAStartup failed." << std::endl;
+        log(WARNING) << "WSAStartup failed." << std::endl;
         return false;
     }
 #endif
     server_socket_ = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket_ == INVALID_SOCKET) {
-        std::cerr << "Socket creation failed." << std::endl;
+        log(WARNING) << "Socket creation failed." << std::endl;
         return false;
     }
 
@@ -30,13 +30,13 @@ bool Server::initialize() {
     server_addr.sin_port = htons(port_);
 
     if (bind(server_socket_, (struct sockaddr*)&server_addr, sizeof(server_addr)) == SOCKET_ERROR) {
-        std::cerr << "Bind failed." << std::endl;
+        log(WARNING) << "Bind failed." << std::endl;
         closesocket(server_socket_);
         return false;
     }
 
     if (listen(server_socket_, SOMAXCONN) == SOCKET_ERROR) {
-        std::cerr << "Listen failed." << std::endl;
+        log(WARNING) << "Listen failed." << std::endl;
         closesocket(server_socket_);
         return false;
     }
@@ -81,7 +81,7 @@ void Server::handleClientMessages() {
     int activity = select(static_cast<int>(max_sd_ + 1), &read_fds, nullptr, nullptr, nullptr);
 
     if (activity < 0) {
-        std::cerr << "select() error" << std::endl;
+        log(WARNING) << "select() error" << std::endl;
         return;
     }
 
