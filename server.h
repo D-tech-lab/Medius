@@ -17,15 +17,15 @@
 #define closesocket close
 using SOCKET = int;
 #endif
-
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 class Server {
 public:
     explicit Server(int port);
     ~Server();
-
+    std::unordered_map<SOCKET, std::string> client_ips;
     bool start();
     void run();
     void stop();

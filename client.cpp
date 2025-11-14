@@ -57,21 +57,24 @@ bool Client::connectToServer() {
 
 void Client::receiveMessages() {
 	char buffer[2048];
+
 	while (running_) {
 		int bytes_received = recv(client_socket_, buffer, sizeof(buffer) - 1, 0);
+
 		if (bytes_received > 0) {
 			buffer[bytes_received] = '\0';
-			log(INFO) << "\n[Server]: " << buffer << std::endl;
-			log(INFO) << ">> ";
-			//log(INFO).flush();
+
+			std::cout << "\n" << buffer << std::endl;
+			std::cout << ">> " << std::flush;
 		}
 		else if (bytes_received == 0) {
-			log(INFO) << "\nDisconnected from server." << std::endl;
+			std::cout << "\nDisconnected from server." << std::endl;
 			running_ = false;
 			break;
 		}
 	}
 }
+
 
 
 void Client::run() {

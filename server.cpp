@@ -57,6 +57,12 @@ void Server::acceptNewClient() {
     sockaddr_in client_addr{};
     socklen_t addrlen = sizeof(client_addr);
     SOCKET new_socket = accept(server_socket_, (struct sockaddr*)&client_addr, &addrlen);
+    char ip[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &client_addr.sin_addr, ip, INET_ADDRSTRLEN);
+
+    client_ips[new_socket] = ip;
+
+    log(INFO) << "New client connected: " << ip << std::endl;
 
     if (new_socket != INVALID_SOCKET) {
         clients_.push_back(new_socket);
@@ -71,7 +77,8 @@ void Server::acceptNewClient() {
 void Server::broadcastMessage(const std::string& message, SOCKET sender) {
     for (SOCKET client : clients_) {
         if (client != sender) {
-            send(client, message.c_str(), static_cast<int>(message.size()), 0);
+            std::string fullMessage = "[" + client_ips[sender] + "]: " + message;
+            send(client, fullMessage.c_str(), fullMessage.size(), 0);
         }
     }
 }
@@ -105,12 +112,14 @@ void Server::handleClientMessages() {
                 continue;
             }
             else {
-                buffer[bytes_received] = '\0'; 
+                buffer[bytes_received] = '\0';
                 std::string message = buffer;
-                log(INFO)<< "Broadcasting: " << message << endl;
-                cout << "["<<client_ip<<"]: " << message << endl;
-                    broadcastMessage(message, client_socket);
+                log(INFO) << "Broadcasting: " << message << endl;
+                std::string sender_ip = client_ips[client_socket];
+                cout << "[" << sender_ip << "]: " << message << endl;
+                broadcastMessage(message, client_socket);
             }
+
         }
         ++it;
     }
