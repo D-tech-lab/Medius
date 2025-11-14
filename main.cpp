@@ -22,8 +22,8 @@ int main(int argc, char* argv[]) {
 	log(INFO) << "Welcome to Medius connector. Starting Medius..." << std::endl;
 	if ((argc < 3)||(argv[1] == nullptr)) {
 		std::cout << "Usage:\n";
-		std::cout << "To start server: medius server <port>\n";
-		std::cout << "To start client: medius client <ip> <port>\n";
+		std::cout << "To start server: medius --server <port>\n";
+		std::cout << "To start client: medius --client <ip> <port>\n";
 		log(INFO) << "executed without arguements. Exiting..." << std::endl;
 		return 0;
 	}

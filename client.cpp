@@ -1,4 +1,4 @@
-#include "client.h"
+﻿#include "client.h"
 #include <iostream>
 #include "logger.h"
 
@@ -76,6 +76,20 @@ void Client::receiveMessages() {
 
 void Client::run() {
 	std::thread recv_thread(&Client::receiveMessages, this);
+	recv_thread.detach(); // ✅ keep listening in background
 
+	std::string input;
+	while (running_) {
+		std::cout << ">> ";
+		std::getline(std::cin, input);
 
+		if (input == "exit" || input == "quit") {
+			running_ = false;
+			break;
+		}
+
+		send(client_socket_, input.c_str(), static_cast<int>(input.size()), 0);
+	}
+
+	closesocket(client_socket_);
 }

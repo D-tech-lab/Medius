@@ -1,6 +1,7 @@
 #include "server.h"
 #include "logger.h"
 #include <iostream>
+char client_ip[INET_ADDRSTRLEN];
 using namespace std;
 Server::Server(int port) : port_(port), server_socket_(INVALID_SOCKET), max_sd_(0) {
     FD_ZERO(&master_set_);
@@ -62,7 +63,6 @@ void Server::acceptNewClient() {
         FD_SET(new_socket, &master_set_);
         if (new_socket > max_sd_) max_sd_ = new_socket;
 
-        char client_ip[INET_ADDRSTRLEN];
         inet_ntop(AF_INET, &client_addr.sin_addr, client_ip, INET_ADDRSTRLEN);
         log(INFO)<< "New client connected: " << client_ip << std::endl;
     }
@@ -105,9 +105,10 @@ void Server::handleClientMessages() {
                 continue;
             }
             else {
-                buffer[bytes_received] = '\\0';
+                buffer[bytes_received] = '\0'; 
                 std::string message = buffer;
                 log(INFO)<< "Broadcasting: " << message << endl;
+                cout << "["<<client_ip<<"]: " << message << endl;
                     broadcastMessage(message, client_socket);
             }
         }
