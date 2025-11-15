@@ -28,8 +28,11 @@ Medius
 
 ## ▶️ Usage
 medius --server <port>
+
 eg. medius --server 8080
+
 medius --client <ip> <port>
+
 eg. medius --client 127.0.0.1 8080
 
 ---
